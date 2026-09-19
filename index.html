@@ -3,39 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero Fee UPI Collector</title>
-    <!-- Load qrcode.js library for client-side rendering -->
+    <title>Pro Payment Splitter</title>
+    <!-- Tailwind CSS (Premium Design ke liye bina install kiye) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QRCode.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
-        .input-group { margin-bottom: 15px; }
-        input { width: 100%; padding: 8px; margin-top: 5px; }
-        button { padding: 10px 15px; background: #4F46E5; color: white; border: none; cursor: pointer; width: 100%;}
-        #qr-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
-        .qr-card { border: 1px solid #ccc; padding: 15px; text-align: center; border-radius: 8px;}
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.4); 
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .glass-card { border: none !important; box-shadow: none !important; }
+        }
     </style>
 </head>
-<body>
-
-    <h2>Collect the full amount. Pay ₹0 fees.</h2>
+<body class="min-h-screen bg-gradient-to-br from-[#EEF2FF] via-[#F8FAFC] to-[#F3E8FF] flex justify-center py-12 font-sans text-slate-800 selection:bg-indigo-200">
     
-    <div class="input-group">
-        <label>Your UPI ID</label>
-        <input type="text" id="upiId" placeholder="example@bank.com">
-    </div>
-    <div class="input-group">
-        <label>Account holder name</label>
-        <input type="text" id="payeeName" placeholder="Jane Doe">
-    </div>
-    <div class="input-group">
-        <label>Full amount to collect (₹)</label>
-        <input type="number" id="totalAmount" placeholder="4500">
+    <div class="max-w-[1150px] w-full px-6 animate-slide-up">
+        
+        <!-- Header -->
+        <div class="text-center mb-12 no-print">
+            <div class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-indigo-100">
+                ✨ Pro Payment Splitter
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600">
+                Collect Full Amount. <br class="hidden md:block" /> Pay ₹0 MDR Fees.
+            </h1>
+            <p class="text-slate-500 max-w-xl mx-auto text-lg">
+                Smartly split your large UPI collections to bypass transaction fees. Fast, secure, and entirely within your browser.
+            </p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+            
+            <!-- Left Column: Form -->
+            <div class="w-full lg:w-5/12 glass-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] no-print">
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-slate-800">Payment Details</h2>
+                    <p class="text-slate-500 text-sm mt-1">Enter receiver details to generate codes.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">UPI ID</label>
+                        <input type="text" id="upiId" placeholder="merchant@bank" class="w-full bg-white/80 border border-slate-200 rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300" required>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">Account Holder Name</label>
+                        <input type="text" id="payeeName" placeholder="Business Name" class="w-full bg-white/80 border border-slate-200 rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300" required>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">Amount to Collect (₹)</label>
+                        <div class="relative group">
+                            <span class="absolute left-4 top-3.5 text-slate-400 font-medium">₹</span>
+                            <input type="number" id="totalAmount" placeholder="5000" class="w-full bg-white/80 border border-slate-200 rounded-xl pl-9 pr-14 py-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300 font-medium text-lg" required>
+                            <span class="absolute right-4 top-4 text-slate-400 text-sm font-medium">INR</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700 flex justify-between">
+                            Payment Note <span class="text-slate-400 font-normal">Optional</span>
+                        </label>
+                        <input type="text" id="note" placeholder="e.g. Order #1042" class="w-full bg-white/80 border border-slate-200 rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300">
+                    </div>
+
+                    <button id="generateBtn" onclick="processPayment()" class="w-full group bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 rounded-xl mt-4 transition-all duration-300 shadow-[0_4px_14px_0_rgb(99,102,241,0.39)] flex justify-center items-center gap-2">
+                        <span id="btnText">Generate Magic QRs &rarr;</span>
+                    </button>
+                </div>
+
+                <div class="flex justify-center items-center mt-6 text-xs text-slate-400 gap-1.5 bg-slate-50/50 py-2 rounded-lg border border-slate-100">
+                    🔒 <span>End-to-end local. Data never leaves this device.</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="w-full lg:w-7/12" id="resultsArea">
+                <!-- Blank State Box -->
+                <div class="h-full min-h-[400px] glass-card rounded-3xl border-dashed border-2 border-slate-200 flex flex-col items-center justify-center text-slate-400 p-8 text-center no-print">
+                    <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4 text-2xl">✨</div>
+                    <p class="font-medium text-slate-500">Awaiting Details</p>
+                    <p class="text-sm mt-1 max-w-xs">Enter the amount and UPI details to see the magic split happen here.</p>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
-    <button onclick="generateSplitQRs()">Generate QR codes &rarr;</button>
-
-    <div id="qr-container"></div>
-
+    <!-- Link JS File -->
     <script src="script.js"></script>
 </body>
 </html>
