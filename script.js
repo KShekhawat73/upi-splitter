@@ -6,10 +6,15 @@ const mainApp = document.getElementById('mainApp');
 
 function handleLogin() {
     const emailInput = document.getElementById('userEmail').value.trim().toLowerCase();
-    if(!emailInput || !emailInput.includes('@gmail.com')) {
-        alert("Please enter a valid Gmail address.");
+    
+    // NEW: Standard Regex to validate ANY proper email format (e.g., name@domain.com)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if(!emailInput || !emailRegex.test(emailInput)) {
+        alert("Please enter a valid email address.");
         return;
     }
+    
     currentUserEmail = emailInput;
     checkAccess();
 }
@@ -43,21 +48,16 @@ function generateAdminQR() {
     });
 }
 
-// SECURITY LOGIC: Checking the secret code
 function verifyPayment() {
     const codeInput = document.getElementById('activationCode').value.trim().toUpperCase();
-    
-    // Yahan aap apna secret code set kar sakte ho. Maine "PRO2026" rakha hai.
     const MASTER_SECRET_CODE = "PRO2026"; 
 
     if (codeInput === MASTER_SECRET_CODE) {
-        // Success: Code is correct, save to memory and unlock
         localStorage.setItem(`premium_${currentUserEmail}`, 'true');
         paywallScreen.classList.add('hidden');
         mainApp.classList.remove('hidden');
         mainApp.classList.add('animate-slide-up');
     } else {
-        // Failed: Wrong code
         alert("❌ Invalid Activation Code! Please pay ₹10 and send the screenshot on WhatsApp to get your code.");
     }
 }
